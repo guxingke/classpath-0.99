@@ -46,19 +46,10 @@ exception statement from your version. */
 # define __attribute__(x)    /* nothing */
 #endif
 
-#if SIZEOF_VOID_P == 8
 # define JCL_POINTER_CLASSNAME "gnu/classpath/Pointer64"
 # define JCL_POINTER_DATASIGN "J"
 # define JCL_POINTER_INTTYPE jlong
 # define JCL_POINTER_GETFIELD GetLongField
-#elif SIZEOF_VOID_P == 4
-# define JCL_POINTER_CLASSNAME "gnu/classpath/Pointer32"
-# define JCL_POINTER_DATASIGN "I"
-# define JCL_POINTER_INTTYPE jint
-# define JCL_POINTER_GETFIELD GetIntField
-#else
-# error "Pointer size is not supported."
-#endif /* SIZEOF_VOID_P */
 
 /*
  * Cached Pointer class info.

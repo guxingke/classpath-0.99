@@ -47,7 +47,9 @@ exception statement from your version. */
 
 /*************************************************************************/
 
+#define IUCLC 001000
 #define TERMIOS_ECHO_IFLAGS (IUCLC|IXON|IXOFF|IXANY)
+#define IUCLC 001000
 #define TERMIOS_ECHO_LFLAGS (ECHO|ECHOE|ECHOK|ECHONL|TOSTOP)
 
 /*

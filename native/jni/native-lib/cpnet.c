@@ -66,44 +66,46 @@ static int socketTimeouts[FD_SETSIZE];
 
 static jint waitForWritable(jint fd)
 {
-  struct timeval tv;
-  fd_set writeset;
-  int ret;
-  
- 
-  FD_ZERO(&writeset);
-  FD_SET(fd, &writeset);
-  if (socketTimeouts[fd] > 0)
-    {
-      tv.tv_sec = socketTimeouts[fd] / 1000;
-      tv.tv_usec = (socketTimeouts[fd] % 1000) * 1000;
-      ret = select(fd+1, NULL, &writeset, NULL, &tv);
-    }
-  else
-    ret = select(fd+1, NULL, &writeset, NULL, NULL);
-
-  return (ret <= 0) ? -1 : 0;
+//  struct timeval tv;
+//  fd_set writeset;
+//  int ret;
+//  
+// 
+//  FD_ZERO(&writeset);
+//  FD_SET(fd, &writeset);
+//  if (socketTimeouts[fd] > 0)
+//    {
+//      tv.tv_sec = socketTimeouts[fd] / 1000;
+//      tv.tv_usec = (socketTimeouts[fd] % 1000) * 1000;
+//      ret = select(fd+1, NULL, &writeset, NULL, &tv);
+//    }
+//  else
+//    ret = select(fd+1, NULL, &writeset, NULL, NULL);
+//
+//  return (ret <= 0) ? -1 : 0;
+    return 0;
 }
 
 static jint waitForReadable(jint fd)
 {
-  struct timeval tv;
-  fd_set readset;
-  int ret;
-
-
-  FD_ZERO(&readset);
-  FD_SET(fd, &readset);
-  if (socketTimeouts[fd] > 0)
-    {
-      tv.tv_sec = socketTimeouts[fd] / 1000;
-      tv.tv_usec = (socketTimeouts[fd] % 1000) * 1000;
-      ret = select(fd+1, &readset, NULL, NULL, &tv);
-    }
-  else
-    ret = select(fd+1, &readset, NULL, NULL, NULL);
-
-  return (ret <= 0) ? -1 : 0;
+//  struct timeval tv;
+//  fd_set readset;
+//  int ret;
+//
+//
+//  FD_ZERO(&readset);
+//  FD_SET(fd, &readset);
+//  if (socketTimeouts[fd] > 0)
+//    {
+//      tv.tv_sec = socketTimeouts[fd] / 1000;
+//      tv.tv_usec = (socketTimeouts[fd] % 1000) * 1000;
+//      ret = select(fd+1, &readset, NULL, NULL, &tv);
+//    }
+//  else
+//    ret = select(fd+1, &readset, NULL, NULL, NULL);
+//
+//  return (ret <= 0) ? -1 : 0;
+    return 0;
 }
 
 jint cpnet_openSocketStream(JNIEnv *env UNUSED, jint *fd, jint family)

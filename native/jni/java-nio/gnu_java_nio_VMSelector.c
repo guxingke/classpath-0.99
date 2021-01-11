@@ -72,37 +72,11 @@ void
 helper_put_filedescriptors (JNIEnv * env, jintArray fdArray, fd_set * fds,
 			    int *max_fd)
 {
-  jint *tmpFDArray = (*env)->GetIntArrayElements (env, fdArray, 0);
-  int size = (*env)->GetArrayLength (env, fdArray);
-  int index, fd;
-
-  for (index = 0; index < size; index++)
-    {
-      fd = tmpFDArray[index];
-
-      if (fd > 0)
-	{
-	  FD_SET (tmpFDArray[index], fds);
-
-	  if (tmpFDArray[index] > (*max_fd))
-	    (*max_fd) = tmpFDArray[index];
-	}
-    }
 }
 
 void
 helper_get_filedescriptors (JNIEnv * env, jintArray * fdArray, fd_set * fds)
 {
-  jint *tmpFDArray = (*env)->GetIntArrayElements (env, fdArray, 0);
-  int size = (*env)->GetArrayLength (env, fdArray);
-  int index, fd;
-
-  for (index = 0; index < size; index++)
-    {
-      fd = tmpFDArray[index];
-      if (fd < 0 || !FD_ISSET (fd, fds))
-	tmpFDArray[index] = 0;
-    }
 }
 
 void
@@ -204,100 +178,5 @@ Java_gnu_java_nio_VMSelector_select (JNIEnv * env,
 				     jintArray write,
 				     jintArray except, jlong timeout)
 {
-  jint result;
-  jclass thread_class = (*env)->FindClass (env, "java/lang/Thread");
-  jmethodID thread_current_thread =
-    (*env)->GetStaticMethodID (env, thread_class, "currentThread",
-			       "()Ljava/lang/Thread;");
-  jmethodID thread_interrupt =
-    (*env)->GetMethodID (env, thread_class, "interrupt", "()V");
-  jmethodID thread_interrupted =
-    (*env)->GetStaticMethodID (env, thread_class, "interrupted", "()Z");
-  jobject current_thread;
-  int max_fd = 0;
-  fd_set read_fds;
-  fd_set write_fds;
-  fd_set except_fds;
-  struct timeval real_time_data;
-  struct timeval *time_data = NULL;
-  char *message;
-
-  /* If a legal timeout value isn't given, use NULL.
-   * This means an infinite timeout. The specification
-   * also says that a zero timeout should be treated
-   * as infinite. Otherwise (if the timeout value is legal),
-   * fill our timeval struct and use it for the select.
-   */
-  if (timeout > 0)
-    {
-      real_time_data.tv_sec = timeout / 1000;
-      real_time_data.tv_usec = (timeout % 1000) * 1000;
-      time_data = &real_time_data;
-    }
-
-  /* Reset all fd_set structures */
-  FD_ZERO (&read_fds);
-  FD_ZERO (&write_fds);
-  FD_ZERO (&except_fds);
-
-  /* Fill the fd_set data structures for the _Jv_select() call. */
-  helper_put_filedescriptors (env, read, &read_fds, &max_fd);
-  helper_put_filedescriptors (env, write, &write_fds, &max_fd);
-  helper_put_filedescriptors (env, except, &except_fds, &max_fd);
-
-  /* Actually do the select */
-  result =
-    helper_select (env, thread_class, thread_interrupted, max_fd + 1,
-		   &read_fds, &write_fds, &except_fds, time_data);
-
-  if (result == -EINTR)
-    {
-      /* The behavior of JRE 1.4.1 is that no exception is thrown
-       * when the thread is interrupted, but the thread's interrupt
-       * status is set. Clear all of our select sets and return 0,
-       * indicating that nothing was selected.
-       */
-      current_thread =
-	(*env)->CallStaticObjectMethod (env, thread_class,
-					thread_current_thread);
-      (*env)->CallVoidMethod (env, current_thread, thread_interrupt);
-
-      helper_reset (env, read);
-      helper_reset (env, write);
-      helper_reset (env, except);
-
-      return 0;
-    }
-
-  if (result < 0)
-    {
-#if defined(HAVE_STRERROR_R)
-      char message_buf[BUF_SIZE+1];
-      int errorcode = -result;
-
-      if (strerror_r (errorcode, message_buf, BUF_SIZE))
-	{
-	  /* This would mean that message_buf was to small
-	   * to hold the error message.
-	   */
-	  JCL_ThrowException (env, "java/lang/InternalError",
-			      "Not enough space in message buffer.");
-	  return 0;
-	}
-
-      message = message_buf;
-#else
-      message = strerror(errno);
-#endif
-
-      JCL_ThrowException (env, "java/io/IOException", message);
-      return 0;
-    }
-
-  /* Set the file descriptors according to the values returned from select(). */
-  helper_get_filedescriptors (env, read, &read_fds);
-  helper_get_filedescriptors (env, write, &write_fds);
-  helper_get_filedescriptors (env, except, &except_fds);
-
-  return result;
+  return 0;
 }
