@@ -1,10 +1,13 @@
 *.o
 Makefile
 *.lo
+*.la
+*.lst
 lib/
 .deps/
 .libs/
 *.1
+*.zip
 config.log
 config.status
 examples/Makefile.java2d
@@ -17,6 +20,7 @@ libtool
 native/fdlibm/libfdlibm.la
 scripts/check_jni_methods.sh
 scripts/classpath.spec
+tools/asm
 tools/gappletviewer
 tools/gjar
 tools/gjarsigner
