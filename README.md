@@ -14,7 +14,7 @@ sudo mount -uw /
 
 # 项目路径
 sudo mkdir -p /usr/local/app
-sudo chown -R `whoami`:admin /usr/loca/app
+sudo chown -R `whoami`:admin /usr/local/app
 
 # 安装路径
 sudo mkdir -p /usr/local/classpath
